@@ -25,10 +25,3 @@ func RootHandler(c echo.Context) error {
 
 	return c.JSONBlob(http.StatusOK, bytes)
 }
-
-// TestHandler return map response
-func TestHandler(c echo.Context) error {
-	response := map[string]string{"ping": "pong"}
-
-	return c.JSON(http.StatusOK, response)
-}
