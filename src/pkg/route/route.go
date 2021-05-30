@@ -2,6 +2,7 @@ package route
 
 import (
 	"app/pkg/handler"
+	"net/http"
 
 	"app/pkg/db/validation"
 
@@ -18,6 +19,10 @@ func Router() *echo.Echo {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.BodyDump(handler.BodyDumper))
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:3000"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
 	e.Validator = &validation.Custom{Validator: validator.New()}
 
 	e.GET("/", handler.RootHandler)
