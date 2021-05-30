@@ -1,10 +1,11 @@
 package route
 
 import (
-	"app/pkg/handler"
-	"net/http"
-
+	"app/pkg/db"
 	"app/pkg/db/validation"
+	"app/pkg/handler"
+	"app/pkg/service"
+	"net/http"
 
 	validator "github.com/go-playground/validator/v10"
 	"github.com/labstack/echo"
@@ -27,6 +28,16 @@ func Router() *echo.Echo {
 
 	e.GET("/", handler.RootHandler)
 	e.GET("/test", handler.TestHandler)
+
+	ts := service.NewServiceTask(db.DB)
+	th := handler.NewTaskHandler(ts)
+
+	api := e.Group("/api")
+	api.GET("/tasks", th.GetTasks)
+	api.GET("/tasks/:id", th.GetTask)
+	api.POST("/tasks", th.CreateTask)
+	api.PUT("/tasks/:id", th.UpdateTask)
+	api.DELETE("/tasks/:id", th.DeleteTask)
 
 	// us := service.NewServiceUser(db.DB)
 	// uh := handler.NewUserHandler(us)
