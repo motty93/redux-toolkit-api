@@ -3,7 +3,7 @@ module app
 go 1.14
 
 require (
-	github.com/99designs/gqlgen v0.13.0 // indirect
+	github.com/99designs/gqlgen v0.13.0
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -21,7 +21,7 @@ require (
 	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/urfave/cli/v2 v2.3.0 // indirect
 	github.com/vektah/dataloaden v0.3.0 // indirect
-	github.com/vektah/gqlparser/v2 v2.2.0 // indirect
+	github.com/vektah/gqlparser/v2 v2.2.0
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de // indirect
 	golang.org/x/sys v0.0.0-20210601080250-7ecdf8ef093b // indirect
 	golang.org/x/text v0.3.3 // indirect
