@@ -31,15 +31,19 @@ func Router() *echo.Echo {
 
 	ts := service.NewServiceTask(db.DB)
 	th := handler.NewTaskHandler(ts)
+	us := service.NewServiceUser(db.DB)
+	uh := handler.NewUserHandler(us)
 
-	api := e.Group("/api")
-	api.GET("/tasks", th.GetTasks)
-	api.GET("/tasks/:id", th.GetTask)
-	api.POST("/tasks", th.CreateTask)
-	api.PUT("/tasks/:id", th.UpdateTask)
-	api.DELETE("/tasks/:id", th.DeleteTask)
+	e.GET("/login", uh.Login)
+	a := e.Group("/api")
+	a.Use(middleware.JWT([]byte("secret")))
+	a.POST("", uh.Restricted)
+	// GraphQL使用するのであれば以下不要
+	a.GET("/tasks", th.GetTasks)
+	a.GET("/tasks/:id", th.GetTask)
+	a.POST("/tasks", th.CreateTask)
+	a.PUT("/tasks/:id", th.UpdateTask)
+	a.DELETE("/tasks/:id", th.DeleteTask)
 
-	// us := service.NewServiceUser(db.DB)
-	// uh := handler.NewUserHandler(us)
 	return e
 }
