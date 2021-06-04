@@ -25,6 +25,10 @@ func NewUserHandler(su *service.User) *User {
 func (u *User) Login(c echo.Context) error {
 	email := c.FormValue("email")
 	password := c.FormValue("password")
+	if email == "" || password == "" {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Email or Password is empty.")
+	}
+
 	err := u.su.Session(email, password)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, errors.Is(err, gorm.ErrRecordNotFound))
