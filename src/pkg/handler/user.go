@@ -5,7 +5,9 @@ import (
 	"app/pkg/service"
 	"net/http"
 	"strconv"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
@@ -17,6 +19,43 @@ type User struct {
 
 func NewUserHandler(su *service.User) *User {
 	return &User{su: su}
+}
+
+// Login create jwt token for a login user
+func (u *User) Login(c echo.Context) error {
+	email := c.FormValue("email")
+	password := c.FormValue("password")
+	err := u.su.Session(email, password)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, errors.Is(err, gorm.ErrRecordNotFound))
+	}
+
+	// Create jwt token
+	token := jwt.New(jwt.SigningMethodES256)
+	// Set claims
+	claims := token.Claims.(jwt.MapClaims)
+	claims["email"] = email
+	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+
+	// Generate encoded token and send it as response
+	t, err := token.SignedString([]byte("secret"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to generate encoded token.")
+	}
+	response := map[string]string{"token": t}
+
+	return c.JSON(http.StatusOK, response)
+}
+
+// Restricted is jwt auth
+func (u *User) Restricted(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	if _, ok := claims["email"]; ok {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Unauthorized token.")
+	}
+
+	return c.String(http.StatusOK, "Welcome!")
 }
 
 // GetUsers get all theirs
