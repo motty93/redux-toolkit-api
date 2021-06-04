@@ -6,57 +6,67 @@ import (
 	"gorm.io/gorm"
 )
 
-type Task struct {
+type User struct {
 	db *gorm.DB
 }
 
-func NewServiceTask(db *gorm.DB) *Task {
-	return &Task{db: db}
+func NewServiceUser(db *gorm.DB) *User {
+	return &User{db: db}
 }
 
-// Tasks find all
-func (t *Task) Tasks() (*[]model.Task, error) {
-	tasks := new([]model.Task)
-	if err := t.db.Find(&tasks).Error; err != nil {
-		return nil, err
-	}
-
-	return tasks, nil
-}
-
-// Task find by id task
-func (t *Task) Task(id int) (*model.Task, error) {
-	task := new(model.Task)
-	if err := t.db.First(&task, id).Error; err != nil {
-		return nil, err
-	}
-
-	return task, nil
-}
-
-// Create task
-func (t *Task) Create(task *model.Task) error {
-	if err := t.db.Create(task).Error; err != nil {
+// Session login process
+func (u *User) Session(email, password string) error {
+	user := new(model.User)
+	if err := u.db.Find(&user, "email=? and password=?", email, password).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-// Update task
-func (t *Task) Update(nt *model.Task, id int) (*model.Task, error) {
-	var task model.Task
-	if err := t.db.First(&task, id).Updates(nt).Error; err != nil {
+// Users find all
+func (u *User) Users() (*[]model.User, error) {
+	users := new([]model.User)
+	if err := u.db.Find(&users).Error; err != nil {
 		return nil, err
 	}
 
-	return &task, nil
+	return users, nil
 }
 
-// Delete task
-func (t *Task) Delete(id int) error {
-	task := new(model.Task)
-	if err := t.db.Delete(&task, id).Error; err != nil {
+// User find by id user
+func (u *User) User(id int) (*model.User, error) {
+	user := new(model.User)
+	if err := u.db.First(&user, id).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+// Create user
+func (u *User) Create(user *model.User) error {
+	if err := u.db.Create(user).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Update user
+func (u *User) Update(nt *model.User, id int) (*model.User, error) {
+	var user model.User
+	if err := u.db.First(&user, id).Updates(nt).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+// Delete user
+func (u *User) Delete(id int) error {
+	user := new(model.User)
+	if err := u.db.Delete(&user, id).Error; err != nil {
 		return err
 	}
 
