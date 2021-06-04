@@ -34,7 +34,8 @@ func Router() *echo.Echo {
 	us := service.NewServiceUser(db.DB)
 	uh := handler.NewUserHandler(us)
 
-	e.GET("/login", uh.Login)
+	e.POST("/sign_up", uh.CreateUser)
+	e.POST("/sign_in", uh.Login)
 	a := e.Group("/api")
 	a.Use(middleware.JWT([]byte("secret")))
 	a.POST("", uh.Restricted)
