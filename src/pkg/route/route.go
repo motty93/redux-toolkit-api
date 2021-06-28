@@ -22,7 +22,7 @@ func Router() *echo.Echo {
 	e.Use(middleware.BodyDump(handler.BodyDumper))
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:3000"},
-		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
 	}))
 	e.Validator = &validation.Custom{Validator: validator.New()}
 
