@@ -94,6 +94,9 @@ func (u *User) CreateUser(c echo.Context) error {
 	if err := c.Bind(user); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to bind user.")
 	}
+	if err := c.Validate(user); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
 
 	err := u.su.Create(user)
 	if err != nil {
