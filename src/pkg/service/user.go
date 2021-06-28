@@ -15,13 +15,13 @@ func NewServiceUser(db *gorm.DB) *User {
 }
 
 // Session login process
-func (u *User) Session(email, password string) error {
+func (u *User) Session(email, password string) (*model.User, error) {
 	user := new(model.User)
 	if err := u.db.Find(&user, "email=? and password=?", email, password).Error; err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return user, nil
 }
 
 // Users find all
