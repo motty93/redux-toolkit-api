@@ -29,20 +29,23 @@ func (u *User) Login(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Email or Password is empty.")
 	}
 
-	err := u.su.Session(email, password)
+	user, err := u.su.Session(email, password)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, errors.Is(err, gorm.ErrRecordNotFound))
 	}
 
 	// Create jwt token
-	token := jwt.New(jwt.SigningMethodES256)
+	token := jwt.New(jwt.SigningMethodHS256)
 	// Set claims
 	claims := token.Claims.(jwt.MapClaims)
-	claims["email"] = email
+	claims["sub"] = user.ID
+	claims["name"] = user.Name
+	claims["email"] = user.Email
+	claims["updated_at"] = user.UpdatedAt
 	claims["iat"] = time.Now().Unix()
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * 48).Unix()
 
-	// Generate encoded token and send it as response
+	// 電子署名(あとで変える)
 	t, err := token.SignedString([]byte("secret"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to generate encoded token.")
@@ -56,11 +59,11 @@ func (u *User) Login(c echo.Context) error {
 func (u *User) Restricted(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-	if _, ok := claims["email"]; ok {
+	if _, ok := claims["email"]; !ok {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Unauthorized token.")
 	}
 
-	return c.String(http.StatusOK, "Welcome!")
+	return c.JSON(http.StatusOK, map[string]string{"ping": "pong"})
 }
 
 // GetUsers get all theirs
