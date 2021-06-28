@@ -32,6 +32,8 @@ services:
     depends_on:
       - db
     tty: true
+    stdin_open: true
+    restart: always
     env_file:
       - .env
 
