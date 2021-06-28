@@ -38,7 +38,9 @@ func Router() *echo.Echo {
 	e.POST("/sign_in", uh.Login)
 	a := e.Group("/api")
 	a.Use(middleware.JWT([]byte("secret")))
-	a.POST("", uh.Restricted)
+	a.GET("", uh.Restricted)
+	// test endpoint
+	a.GET("/ping", handler.TestHandler)
 	// GraphQL使用するのであれば以下不要
 	a.GET("/tasks", th.GetTasks)
 	a.GET("/tasks/:id", th.GetTask)
