@@ -10,6 +10,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/pkg/errors"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -29,9 +30,14 @@ func (u *User) Login(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Email or Password is empty.")
 	}
 
-	user, err := u.su.Session(email, password)
+	user, err := u.su.Session(email)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, errors.Is(err, gorm.ErrRecordNotFound))
+	}
+
+	err = bcrypt.CompareHashAndPassword(user.Password, []byte(password))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusForbidden, "Username or/and Password do not match.")
 	}
 
 	// Create jwt token
