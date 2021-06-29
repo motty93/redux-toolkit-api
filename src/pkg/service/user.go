@@ -3,6 +3,7 @@ package service
 import (
 	"app/pkg/db/model"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -15,11 +16,14 @@ func NewServiceUser(db *gorm.DB) *User {
 }
 
 // Session login process
-func (u *User) Session(email, password string) (*model.User, error) {
+func (u *User) Session(email string) (*model.User, error) {
 	user := new(model.User)
-	if err := u.db.Find(&user, "email=? and password=?", email, password).Error; err != nil {
+	if err := u.db.Find(&user, "email=?", email).Error; err != nil {
 		return nil, err
 	}
+	// if err := u.db.Find(&user, "email=? and password=?", email, password).Error; err != nil {
+	// 	return nil, err
+	// }
 
 	return user, nil
 }
