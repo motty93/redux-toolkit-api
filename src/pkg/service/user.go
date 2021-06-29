@@ -45,8 +45,18 @@ func (u *User) User(id int) (*model.User, error) {
 }
 
 // Create user
-func (u *User) Create(user *model.User) error {
-	if err := u.db.Create(user).Error; err != nil {
+func (u *User) Create(userReq *model.UserReq) error {
+	// passwordの暗号化, 第二引数はコスト
+	bs, err := bcrypt.GenerateFromPassword([]byte(userReq.Password), 10)
+	if err != nil {
+		return err
+	}
+
+	user := model.User{
+		Email:    userReq.Email,
+		Password: bs,
+	}
+	if err := u.db.Create(&user).Error; err != nil {
 		return err
 	}
 

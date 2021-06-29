@@ -93,7 +93,7 @@ func (u *User) GetUser(c echo.Context) error {
 
 // CreateUser user create
 func (u *User) CreateUser(c echo.Context) error {
-	user := new(model.User)
+	user := new(model.UserReq)
 	if err := c.Bind(user); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to bind user.")
 	}
@@ -103,7 +103,7 @@ func (u *User) CreateUser(c echo.Context) error {
 
 	err := u.su.Create(user)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to insert data.")
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.NoContent(http.StatusNoContent)
