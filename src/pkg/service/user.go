@@ -2,6 +2,7 @@ package service
 
 import (
 	"app/pkg/db/model"
+	"app/pkg/handler/request"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -49,7 +50,7 @@ func (u *User) User(id int) (*model.User, error) {
 }
 
 // Create user
-func (u *User) Create(userReq *model.UserReq) error {
+func (u *User) Create(userReq *request.User) error {
 	// passwordの暗号化, 第二引数はコスト
 	bs, err := bcrypt.GenerateFromPassword([]byte(userReq.Password), 10)
 	if err != nil {

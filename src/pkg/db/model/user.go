@@ -7,8 +7,3 @@ type User struct {
 	Password []byte `json:"password" validate:"required"`
 	Hobby    string `json:"hobby"`
 }
-
-type UserReq struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validte:"required,password"`
-}
