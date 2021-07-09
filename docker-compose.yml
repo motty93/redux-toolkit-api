@@ -16,6 +16,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       TZ: Asia/Tokyo
+    security_opt:
+      - apparmor:unconfined
     env_file:
       - .env
 
@@ -34,6 +36,10 @@ services:
     tty: true
     stdin_open: true
     restart: always
+    security_opt:
+      - apparmor:unconfined
+    cap_add:
+      - SYS_PTRACE
     env_file:
       - .env
 
@@ -49,6 +55,8 @@ services:
       - ./src/build/docker/nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - api
+    security_opt:
+      - apparmor:unconfined
 
 volumes:
   echo-mysql-data:
