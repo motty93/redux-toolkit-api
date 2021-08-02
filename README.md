@@ -2,7 +2,7 @@
 ## environment
 * docker version 19.03.6
 * docker-compose version 1.25.4
-* go version 1.14.6
+* go version 1.16
 * mysql version 5.7
 * nginx latest
 
@@ -37,5 +37,5 @@ $ xdg-open http://localhost:8020 # for linux
 ### download library
 
 ```
-$ docker-compose run --rm golang go get <package path>
+$ docker-compose run --rm api go get <package path>
 ```
